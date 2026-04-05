@@ -129,7 +129,12 @@ build_regional_dataset <- function(state, district, crop, years) {
   if (!years %in% c(1L, 3L, 5L)) years <- 3L
 
   seed <- fnv1a_32(paste0(state, "|", district, "|", crop, "|", years))
-  set.seed(seed %% 2147483647L)
+  
+  if (is.na(seed) || !is.numeric(seed)) {
+    seed <- 12345L
+  }
+  
+  set.seed(as.integer(seed) %% 2147483647L)
   rng <- function() stats::runif(1)
 
   msp <- unname(MSP_RUPEES_PER_QUINTAL[crop]) %||% 2000
